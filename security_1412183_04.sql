@@ -63,8 +63,6 @@ update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_bo
 select * from Charge;
 -- test
 --SELECT HASH_KEY, ENCRYPT_AMOUNT,AMOUNT  FROM Charge;
---select PROJ_ID,ENCRYPT_AMOUNT,AMOUNT from CHARGE;
---select HASH_KEY from Charge where proj_id = 1;
 --visual case
 select
 decrypt_amount_charge(ENCRYPT_AMOUNT, HASH_KEY, 'pwd_boeing_737')
