@@ -1,35 +1,64 @@
 --VP2:Truong Du An chi duoc phep doc, ghi thong tin chi tieu cua du an minh quan ly
 --Tao ham chinh sach cho VP2
-CREATE OR REPLACE FUNCTION VPD_ProjLeader_Charge (p_schema VARCHAR2, p_obj VARCHAR2)
-RETURN VARCHAR2
-AS
-  user VARCHAR2(100);
-  Prj_id VARCHAR2(10);
-  icount NUMBER;
+
+create or replace function CRU_Charge_Project (p_schema varchar2, p_object varchar2)
+return varchar2
+as
+  getUser varchar2(10);
+  getMaDA number;
+	flag number;
+begin
+    getUser := sys_context('  userenv', 'session_user');
+    getUser := LOWER(getUser);
+    select count(*) into flag from Project
+    where Project_leader = getUser;
+    -- if(LOWER(getUser) = 'xxxxxxxx59') THEN
+    -- return 'Proj_id = ' ||To_Char(4); 
+    -- else
+    -- return 'Proj_id = ' ||To_Char(2); 
+    if flag > 0 then
+    select Project_id into getMaDA from Project where Project_leader = getUser;
+    return 'Proj_id = ' || To_Char(getMaDA);
+    else return 'Proj_id = ' ||To_Char(2); 
+    end if;
+end;
+
+  
+--Gan chinh sach vao bang Charge
+begin
+  dbms_rls.add_policy
+  (
+      object_schema => 'OwnerDB',
+      object_name => 'Charge',
+      policy_name => 'VPD_2',
+      policy_function => 'CRU_Charge_Project',
+      statement_types => 'select, update, insert, delete',
+      update_check => TRUE    
+  );
+end;
+
+
+--DROp
+drop function CRU_Charge_Project;
 BEGIN
-  user:= SYS_CONTEXT('userenv','SESSION_USER');
-  SELECT COUNT(*) INTO icount FROM Department WHERE Depart_chief= user;
-  IF(icount > 0) THEN
-    RETURN '';
-  ELSE
-    BEGIN
-     SELECT Project_id INTO Prj_id FROM Project WHERE Project_Leader = user;
-     RETURN 'Proj_id='|| q'[']' || Prj_id || q'[']';
-    END;
-  END IF;
-  EXCEPTION
-      WHEN OTHERS THEN RETURN '1 = 0';
+ dbms_rls.drop_policy
+(
+  object_schema=>'OwnerDB' ,
+  object_name=>'Charge',
+  policy_name=>'VPD_2'                     
+);
 END;
 
-BEGIN
- dbms_rls.add_policy(object_schema=>'OwnerDB'	,
-                        object_name=>'Charge',
-                        policy_name=>'VPD_2',
-                        function_schema=>'OwnerDB',
-                        policy_function=>'VPD_ProjLeader_Charge',
-                        statement_types=>'select,update,insert',
-                        update_check=>TRUE);
-END;
---SELECT VALUE FROM V$DIAG_INFO WHERE NAME = 'Default Trace File';
-grant select, update,insert on Charge to Project_Leader;
-  select * from Charge;
+--update infor bảng Charge
+update Charge set HASH_KEY = Hash_key('pwd_boeing_737') where Proj_id = 1;
+update Charge set HASH_KEY = Hash_key('pwd_boeing_747') where Proj_id = 2;
+update Charge set HASH_KEY = Hash_key('pwd_boeing_757') where Proj_id = 3;
+update Charge set HASH_KEY = Hash_key('pwd_boeing_767') where Proj_id = 4;
+update Charge set HASH_KEY = Hash_key('pwd_boeing_787') where Proj_id = 5;
+
+-- Update cột ENCRYPT_AMOUNT trong bảng Charge
+update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_boeing_737') where Proj_id = 1;
+update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_boeing_747') where Proj_id = 2;
+update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_boeing_757') where Proj_id = 3;
+update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_boeing_767') where Proj_id = 4;
+update Charge set ENCRYPT_AMOUNT = encrypt_amount_charge(TO_CHAR(Amount),'pwd_boeing_787') where Proj_id = 5;
