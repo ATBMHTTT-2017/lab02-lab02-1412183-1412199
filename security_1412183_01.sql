@@ -61,6 +61,7 @@ select staff_salary_encrypt from Staff where Staff_depart=1;
 select * from Staff where staff_id ='xxxxxxxxx2';
 --4B92E41A8306867B
 SELECT  CRYPT01.DECRYPT_SALARY(Staff_Salary_encrypt, Staff_ID)FROM STAFF St Where STAFF_ID = 'xxxxxxxxx2';
+SELECT  CRYPT01.DECRYPT_SALARY(Staff_Salary_encrypt, Staff_ID)FROM STAFF St;
 
 --TEST
 create view staff_view_itsInfor
