@@ -1,6 +1,4 @@
-
-grant execute on sys.dbms_crypto to OwnerDB;
-  alter table Staff
+alter table Staff
   ADD
   (
     Staff_Salary_encrypt varchar2(200);

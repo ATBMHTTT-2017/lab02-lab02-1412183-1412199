@@ -18,6 +18,7 @@ GRANT EXECUTE ANY PROCEDURE TO OwnerDB WITH ADMIN OPTION;
 grant execute on dbms_rls to OwnerDB;
 GRANT exempt access policy to OwnerDB;
 GRANT CREATE ANY CONTEXT to OwnerDB;
+grant execute on dbms_rls to OwnerDB;
 
 
 --1. nhân viên
