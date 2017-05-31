@@ -65,7 +65,13 @@ select * from Charge;
 --SELECT HASH_KEY, ENCRYPT_AMOUNT,AMOUNT  FROM Charge;
 --select PROJ_ID,ENCRYPT_AMOUNT,AMOUNT from CHARGE;
 --select HASH_KEY from Charge where proj_id = 1;
+--visual case
 select
-Charge_id,
-decrypt_amount_charge(ENCRYPT_AMOUNT, HASH_KEY, 'pwd_boeing_781')
-from Charge;
+decrypt_amount_charge(ENCRYPT_AMOUNT, HASH_KEY, 'pwd_boeing_737')
+from Charge
+where PROJ_ID=1;
+--non visual case
+select
+decrypt_amount_charge(ENCRYPT_AMOUNT, HASH_KEY, 'pwd_boeing_738')
+from Charge
+where PROJ_ID=1;
