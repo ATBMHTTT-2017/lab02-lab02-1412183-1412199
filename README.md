@@ -34,10 +34,18 @@ Liệt kê các **yêu cầu nâng cao** đã thực hiện:
 ## Demo
 
 Link ảnh GIF demo ứng dụng:
+* Policy_01_1412183
 
 ![Video Walkthrough](policy_01_1412183.gif)
+
+* Policy_02_1412199
+
 ![Video Walkthrough](policy_02_1412199.gif)
+
+* Policy_03_1412199
 ![Video Walkthrough](policy_03_1412199.gif)
+
+* Policy_04_1412183
 ![Video Walkthrough](policy_04_1412183.gif)
 
 Tạo ảnh GIF với chương trình [LiceCap](http://www.cockos.com/licecap/).
