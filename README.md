@@ -38,7 +38,7 @@ Link ảnh GIF demo ứng dụng:
 ![Video Walkthrough](policy_01_1412183.gif)
 ![Video Walkthrough](policy_02_1412199.gif)
 ![Video Walkthrough](policy_03_1412199.gif)
-![Video Walkthrough](policy_04_1412199.gif)
+![Video Walkthrough](policy_04_1412183.gif)
 
 Tạo ảnh GIF với chương trình [LiceCap](http://www.cockos.com/licecap/).
 
