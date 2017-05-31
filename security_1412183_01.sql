@@ -1,14 +1,19 @@
 
 grant execute on sys.dbms_crypto to OwnerDB;
-
+  alter table Staff
+  ADD
+  (
+    Staff_Salary_encrypt varchar2(200);
+  );
 --Specification
+drop PACKAGE CRYPT01;
 CREATE OR REPLACE PACKAGE CRYPT01 IS
   FUNCTION ENCRYPT_SALARY(p_data IN VARCHAR2,encrytion_Key IN VARCHAR2) RETURN RAW DETERMINISTIC;
-  FUNCTION DECRYPT_SALARY(p_encrytpedData IN RAW,encrytion_Key IN VARCHAR2) RETURN NUMBER DETERMINISTIC;
+  FUNCTION DECRYPT_SALARY(p_encrytpedData IN VARCHAR2,encrytion_Key IN VARCHAR2) RETURN NUMBER DETERMINISTIC;
 END CRYPT01;
 
 --Body
-CREATE OR REPLACE PACKAGE BODY CRYPT01 IS 
+CREATE OR REPLACE PACKAGE BODY CRYPT01 IS
   encryption_type PLS_INTEGER :=
 							 DBMS_CRYPTO.ENCRYPT_DES
 							+DBMS_CRYPTO.CHAIN_CBC
@@ -16,7 +21,7 @@ CREATE OR REPLACE PACKAGE BODY CRYPT01 IS
 
   FUNCTION ENCRYPT_SALARY(p_data IN VARCHAR2,encrytion_Key IN VARCHAR2) RETURN RAW DETERMINISTIC
   IS
-  	encrypted_raw raw(2000);
+  	encrypted_raw raw(1024);
   BEGIN
        encrypted_raw := dbms_crypto.encrypt(
           src => utl_raw.cast_to_raw(p_data),
@@ -25,11 +30,10 @@ CREATE OR REPLACE PACKAGE BODY CRYPT01 IS
       );
       return encrypted_raw;
   END ENCRYPT_SALARY;
-  
-  FUNCTION DECRYPT_SALARY(p_encrytpedData IN RAW,encrytion_Key IN VARCHAR2) RETURN NUMBER DETERMINISTIC
+
+  FUNCTION DECRYPT_SALARY(p_encrytpedData IN VARCHAR2,encrytion_Key IN VARCHAR2) RETURN NUMBER DETERMINISTIC
   IS
-    decrypted_raw raw(2000);
-    result VARCHAR2(50);
+    decrypted_raw raw(1024);
   BEGIN
 
        decrypted_raw := dbms_crypto.decrypt(
@@ -37,8 +41,8 @@ CREATE OR REPLACE PACKAGE BODY CRYPT01 IS
           typ => encryption_type,
           key => utl_raw.cast_to_raw(encrytion_Key)
       );
-      result :=utl_raw.cast_to_VARCHAR2(decrypted_raw);
-      
+
+      return utl_raw.cast_to_VARCHAR2(decrypted_raw);
   END DECRYPT_SALARY;
 
 END CRYPT01;
@@ -48,10 +52,15 @@ BEGIN
 	FOR stf_id IN (Select Staff_id from Staff )
 	LOOP
     UPDATE STAFF
-        SET Staff_Salary = CRYPT01.ENCRYPT_SALARY(stf_id.Staff_Salary, stf_id.Staff_id)
+        SET Staff_Salary_encrypt = CRYPT01.ENCRYPT_SALARY(Staff_Salary, Staff_id)
       WHERE Staff_ID = stf_id.Staff_ID;
 	END LOOP;
 END;
---test 
-SELECT  CRYPT01.DECRYPT_SALARY(St.Staff_Salary, St.Staff_ID)FROM STAFF St Where STAFF_ID = 'xxxxxxx100';
+--test
+select staff_salary_encrypt from Staff where Staff_depart=1;
+select * from Staff where staff_id ='xxxxxxxxx2';
+--4B92E41A8306867B
+SELECT  CRYPT01.DECRYPT_SALARY(Staff_Salary_encrypt, Staff_ID)FROM STAFF St Where STAFF_ID = 'xxxxxxxxx2';
 
+--TEST
+create view staff_view_itsInfor
